@@ -1,0 +1,8 @@
+funcname,n,seconds
+introsort,10,0
+introsort,100,0
+introsort,1000,0
+introsort,10000,0
+introsort,100000,0.026
+introsort,1000000,0.366333
+introsort,10000000,11.7663
