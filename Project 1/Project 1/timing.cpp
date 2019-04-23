@@ -40,15 +40,14 @@ timing time_sort(std::vector<int>& vec, int reps, Sorts sortPtr, bool partial, s
     {
 		std::vector<int> copy = vec;
 		
-		std::vector<int> temps = temperatureSequence(vec.size());
+		std::vector<int> temps = temperatureSequence2(vec.size());
 		std::vector<int> seq;
 		if (sortPtr == Sorts::annealingSort) {
-			seq = johnnyFibSequence(vec.size(), ceil(temps.size()/log2(vec.size()));
+			seq = johnnyFibSequence2(vec.size(), 0, 3);
 		}
 		else {
 			seq = johnnyFibSequence(vec.size(), 1);
 		}
-		= johnnyFibSequence(vec.size());
 		if (partial) {
 			partial_shuffle_vector(copy, rng);
 		}
@@ -124,9 +123,9 @@ int main()
     timing t;
 	//std::cout << "1.0\n";
 	Sorts currentAlgo = Sorts::annealingSort;
-	bool partial = false;
-	std::string sort[] = {"Annealing sort", "Bubble sort", "Insertion sort", "Shell sort_v2", "Spin the bottle sort", "Introsort"};
-	vector<int> elementsBound = {1000, 			2000000, 			2000000,	 2000000, 			250000, 			100000000};
+	bool partial = true;
+	std::string sort[] = {"Annealing sort_t2_partial", "Bubble sort", "Insertion sort", "Shell sort_fib2_partial", "Spin the bottle sort", "Introsort"};
+	vector<int> elementsBound = {500000, 			3000000, 			6000000,	 500000000, 			100000, 			500000000};
 	
 	int seed;
 	std::mt19937 rng = std::mt19937 (seed = time(0));
