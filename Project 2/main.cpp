@@ -63,10 +63,10 @@ int main() {
 
 	// execute the algorithms on the vectors
 	for (int i = 0; i < nAlgos; ++i) {
-		
+		/*
 		if (i != 4)
 			continue; 
-		
+		*/
 		std::cout << "Executing " << str[i] << std::endl;
 		create_empty_timings_file(files[i]);
 		for (int sz = 10; sz <= N; sz *= 2) {
