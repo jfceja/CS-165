@@ -1,7 +1,6 @@
 #include "graph.h"
 #include <random>
 #include <chrono>
-#include <iostream>
 
 bool bernoulli_prob(double prob, std::mt19937& rng) {
 	std::bernoulli_distribution gen(prob);
@@ -25,26 +24,27 @@ void iterate_previous(int m_id, std::mt19937& rng, int d, int& num_added, Graph&
 }
 
 Graph create_barabasi_albert_graph(int n, int d) {
-	Graph g;
+	Graph graph;
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::mt19937 rng = std::mt19937(19937);
-	g.add_vertex(); // 0
-	g.add_vertex(); // 1
-	g.add_edge(0, 1);
+	std::vector<int> M (2*n*d, -1); // array of edges chosen so far
+	std::mt19937 rng = std::mt19937(seed);
 
-	for (int node = 0; node < n; ++node) {
-		int m_id = node + 2;
-		int num_vertices = g.get_num_nodes();
-		g.add_vertex();
-		int num_added = 0;
-		for (int deg = 0; deg < d; ++deg) {
-			// iterate through all previous nodes
-			iterate_previous(m_id, rng, d, num_added, g);	
+	for (int v = 0; v < n; ++v) {
+		graph.add_vertex();
+		for (int i = 0; i < d; ++i) {
+			// std::cout <<"v:"  << v << " i: " << i << std::endl;
+			M[2*(v*d+i)] = v;
+			int upper_bound = 2*(v*d + i) - 1;
+			if (upper_bound < 0) {
+				upper_bound = 0;
+			}
+			std::uniform_int_distribution<int> dist(0, upper_bound);
+			int r = dist(rng);
+			M[2*(v*d+i) + 1] = M[r];
 		}
-		// guarantees precisely d vertices being initially added, no more no less.
-		// while (num_added < d && num_added < num_vertices) {
-		// 	iterate_previous(m_id, rng, d, num_added, g);
-		// }
 	}
-	return g;
+	for (int i = 0; i < n*d; ++i) {
+		graph.add_edge(M[2*i], M[2*i+1]);
+	}
+	return graph;
 }

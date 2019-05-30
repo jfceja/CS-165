@@ -50,6 +50,7 @@ Graph create_erdos_renyi_graph(int n, float p); // implement in erdos_renyi.cpp
                                                 // only if your student ID is ODD
 Graph create_barabasi_albert_graph(int n, int d); // implement in barabasi_albert.cpp
                                                   // only if your student ID is EVEN
+Graph create_barabasi_albert_graph_faster(int n, int d);
 // whichever file you have should #include "graph.h"
 
 /******* FILE SUMMARY (SORTED BY DEPENDENCIES) 

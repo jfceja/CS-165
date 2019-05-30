@@ -1,7 +1,5 @@
 #include "graph.h"
-#include <iostream>
 #include <algorithm>
-#include <fstream>
 #include <queue>
 #include <unordered_set>
 
@@ -113,7 +111,7 @@ bool Graph::add_edge(int m_id_from, int m_id_to) {
 
 	// undirected so add the id's to both vectors
 	if (m_graph[m_id_from].edge_exists(m_id_to)) {
-		std::cout << "Edge already exists." << std::endl;
+		// std::cout << "Edge already exists." << std::endl;
 		return false;
 	}
 	m_graph[m_id_from].get_children().push_back(m_id_to);
@@ -136,45 +134,25 @@ void Graph::print_edges() const {
 	}
 }
 
-void Graph::generate_file() {
-	std::string filename_vertices = "inputVertices.csv";
-	std::string filename_edges = "edgesVertices.csv";
-	create_empty_timings_file(filename_vertices, true);
+std::vector<int> Graph::get_ids_nodes() const {
+	std::vector<int> res;
 	for (const auto& node : m_graph) {
-		add_timings_to_file(node.first, node.first, filename_vertices, true);
+		res.push_back(node.second.get_m_id());
 	}
+	return res;
+}
 
-	create_empty_timings_file(filename_edges, false);
+std::vector<std::pair<int, int>> Graph::get_node_edge_pairs() const {
+	std::vector<std::pair<int, int>> res;
 	for (const auto& node : m_graph) {
-		for (const auto& child : node.second.get_children()) {
-			add_timings_to_file(node.first, child, filename_edges, false);
+		int from = node.second.get_m_id();
+		for (const auto& edge : node.second.get_children()) {
+			res.push_back(std::make_pair(from, edge));
 		}
 	}
+	return res;
 }
 
-void Graph::create_empty_timings_file(std::string filename, bool vertex) {
-	std::ofstream f;
-	f.open(filename, std::ios::trunc);
-	if (vertex) {
-		f << "Id,Label,time\n";
-	} else {
-		f << "Source,Target,Type,Id,Label,timeset,Weight\n";
-	}
-	f.close();
-}
-
-void Graph::add_timings_to_file(int from, int to, std::string filename, bool vertex) {
-	std::ofstream f;
-	f.open(filename, std::ios::app);
-	if (vertex) {
-		f << from << "," << from << ",\n";
-	} else {
-		f << from << "," << to << "," << "undirected" << ",,,,\n";
-	}
-	f.close();
-}
-
-// code slowly going down the drain with these design decisions
 Diameter_result Graph::get_eccentricity(int from) const {
 	std::unordered_set<int> seen;
 	std::queue<int> q;
@@ -186,6 +164,7 @@ Diameter_result Graph::get_eccentricity(int from) const {
 	while (!q.empty()) {
 		std::vector<int> node_list;
 		int recent_node;
+		// aggregate all nodes to find all the neighbors at once
 		while(!q.empty()) {
 			node_list.push_back(q.front());
 			q.pop();	

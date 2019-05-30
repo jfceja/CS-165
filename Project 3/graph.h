@@ -1,7 +1,9 @@
 #include "project3.h"
 #include "node.h"
 #include <string>
+#include <utility>
 #include <unordered_map>
+#include <iostream>
 
 struct Diameter_result {
 	int from;
@@ -29,11 +31,13 @@ public:
 
 	std::vector<Node> get_neighbors(Node u);
 
-	void generate_file();
-
 	void print_vertices() const;
 
 	void print_edges() const;
+
+	std::vector<int> get_ids_nodes() const;
+
+	std::vector<std::pair<int, int>> get_node_edge_pairs() const;
 
 	Diameter_result get_eccentricity(int from) const;
 
@@ -50,8 +54,15 @@ private:
 	int m_edges;
 
 	std::unordered_map<int, Node> m_graph;
-
-	void create_empty_timings_file(std::string filename, bool vertex);
-
-	void add_timings_to_file(int from, int to, std::string filename, bool vertex);
 };
+
+// in graph_algorithms.cpp
+enum Algorithm {
+	Diameter,
+	Clustering
+};
+
+void generate_data();
+void generate_data_variable_size_data(const std::vector<std::string>& header, int upper_bound, int reps, int d, Algorithm algo);
+void create_empty_timings_file(std::vector<std::string> data);
+void add_timings_to_file(std::vector<std::string> data);

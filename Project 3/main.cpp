@@ -79,16 +79,9 @@ int main() {
 		// 	std::cout << x.first << "->" << x.second << std::endl;
 		// }
 
-
-		Graph graph = create_barabasi_albert_graph(10000, 5);
-		graph.generate_file();
-		std::cout << "Graph craeted." << std::endl;
-		std::cout << "diameter: " << get_diameter(graph) << std::endl;
-		std::cout << "get_clustering_coefficient: " << get_clustering_coefficient(graph) << std::endl;
-		std::cout << "---------------" << std::endl;
-		for (const auto& x : get_degree_distribution(graph)) {
-			std::cout << x.first << "->" << x.second << std::endl;
-		}
+		// Graph graph = create_barabasi_albert_graph(1500, 5);
+		//generate_files();
+		generate_data();
 
 	}
 	

@@ -1,10 +1,95 @@
 #include "graph.h"
+#include <fstream>
 #include <random>
 #include <chrono>
+#include <algorithm>
+
+void generate_data () {
+	const std::vector<int> dist_sizes {1000, 10000, 100000};
+	const int upper_bound_diameter   = 5000000;
+	const int upper_bound_clustering = 500000;
+	const int reps = 5;
+	const int d = 5;
+
+	const std::vector<std::string> header_diameter {"diameter.csv", "Nodes", "Diameter"};
+	const std::vector<std::string> header_clustering {"clustering.csv", "Nodes", "Clustering"};
+
+	generate_data_variable_size_data(header_diameter, upper_bound_diameter, reps, d, Algorithm::Diameter);
+	generate_data_variable_size_data(header_clustering, upper_bound_clustering, reps, d, Algorithm::Clustering);
+
+	// degree distribution
+	for (int sz : dist_sizes) {
+		std::cout << "Degree distribution, doing size: " << sz << std::endl;
+		std::string filename = "deg_distri_" + std::to_string(sz) + ".csv";
+		create_empty_timings_file({filename, "Degree", "Nodes"});
+		Graph g = create_barabasi_albert_graph(sz, d);
+		std::vector<std::pair<int, int>> mapping_sorted;
+		std::map<int, int> mapping = get_degree_distribution(g);
+
+		for (const auto& ele : mapping) {
+			mapping_sorted.push_back(std::make_pair(ele.first, ele.second));
+		}
+		std::sort(mapping_sorted.begin(), mapping_sorted.end(), [](const auto& a, const auto& b){
+			return a.first < b.first;
+		});
+		for (const auto& ele : mapping_sorted) {
+			add_timings_to_file({filename, std::to_string(ele.first), std::to_string(ele.second)});
+		}
+	}
+}
+
+void generate_data_variable_size_data(const std::vector<std::string>& header, int upper_bound, int reps, int d, Algorithm algo) {
+	create_empty_timings_file(header);
+	// Display what we are diong, ie: diameter or clustering
+	std::cout << header.back() << std::endl;
+	for (int sz = 10; sz <= upper_bound; sz *= 2) {
+		std::cout << "Executing size: " << sz << std::endl;
+		double total = 0;
+		for (int rep = 0; rep < reps; ++rep) {
+			Graph g = create_barabasi_albert_graph(sz, d);
+			switch (algo) {
+				case Algorithm::Diameter:
+					total += get_diameter(g);
+					break;
+				case Algorithm::Clustering:
+					total += get_clustering_coefficient(g);
+					break;
+			}
+		}
+		add_timings_to_file({header.front(), std::to_string(sz), std::to_string(total/reps)});
+	}
+}
+
+void create_empty_timings_file(std::vector<std::string> data) {
+	std::ofstream f;
+	f.open(data.front(), std::ios::trunc);
+	for (unsigned int i = 1; i < data.size(); ++i) {
+		f << data[i];
+		if (i < data.size() - 1) {
+			f << ",";
+		}
+	}
+	f << "\n";
+	f.close();
+}
+
+void add_timings_to_file(std::vector<std::string> data) {
+	std::ofstream f;
+	f.open(data.front(), std::ios::app);
+
+	for (unsigned int i = 1; i < data.size(); ++i) {
+		f << data[i];
+		if (i < data.size() - 1) {
+			f << ",";
+		}
+	}
+	f << "\n";
+	f.close();
+}
 
 int get_diameter(Graph graph) {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::mt19937 rng = std::mt19937(19937);
+	std::mt19937 rng = std::mt19937(seed);
 	std::uniform_int_distribution<int> dist(0, graph.get_num_nodes() - 1);
 
 	int Dmax = 0;
