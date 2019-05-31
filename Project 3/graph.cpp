@@ -165,9 +165,12 @@ std::vector<std::pair<int, int>> Graph::get_node_edge_pairs() const {
 }
 
 Diameter_result Graph::get_eccentricity(int from) const {
+	if (m_graph.find(from) == m_graph.end()) {
+		return Diameter_result{-1, -1, -1};
+	}
 	std::unordered_set<int> seen;
 	std::queue<int> q;
-	int distnace = -1;
+	int distance = -1;
 	int node = 0;
 	q.push(from);
 	seen.insert(from);
@@ -189,10 +192,10 @@ Diameter_result Graph::get_eccentricity(int from) const {
 				}
 			}
 		}
-		++distnace;
+		++distance;
 		node = recent_node;
 	}
-	return Diameter_result{from, node, distnace};
+	return Diameter_result{from, node, distance};
 }
 
 // this can be const but whatever

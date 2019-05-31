@@ -1,4 +1,5 @@
 #include "graph.h"
+//#include "tests.h"
 #include <iostream>
 #define MANUAL_DRIVER 0
 int main() {
@@ -8,10 +9,10 @@ int main() {
 		for (int i =  0; i < 4; ++i) {
 			graph.add_vertex();
 		}
-		graph.add_edge(0, 1);
 		graph.add_edge(1, 2);
 		graph.add_edge(2, 3);
-		graph.add_edge(3, 0);
+		graph.add_edge(3, 4);
+		graph.add_edge(4, 1);
 
 		graph.print_vertices();
 		graph.print_edges();
@@ -46,8 +47,6 @@ int main() {
 				does n mean total number or vertices in graph or nodes ADDED given inital 2 vertces graph?
 					if former, what if n == 1?
  		*/
-		// Graph graph = create_barabasi_albert_graph(1000, 5);
-		// graph.generate_file();
 
 		// testing diameter
 		// Graph graph;
@@ -79,9 +78,31 @@ int main() {
 		// 	std::cout << x.first << "->" << x.second << std::endl;
 		// }
 
-		// Graph graph = create_barabasi_albert_graph(1500, 5);
-		//generate_files();
+		Graph graph = create_barabasi_albert_graph(1000, 5);
+		graph_to_file(&graph);
 		generate_data();
+		// Graph g;
+		// g.add_vertex(); g.add_vertex();g.add_vertex(); g.add_vertex();
+		// g.add_edge(1, 2);g.add_edge(3, 1); g.add_edge(4, 2);
+		// //g.print_edges();
+
+		// Graph g2 = g;
+		// g2.add_vertex();
+
+		// //g2.add_vertex(); g2.add_vertex();
+		// //g2.add_edge(1, 2);
+
+
+		// g.print_vertices();
+		// g.print_edges();
+		// std::cout << "----" << std::endl;
+		// g2.print_vertices();
+		// g2.print_edges();
+		// std::cout << "----" << std::endl;
+		// for (auto x : g.get_neighbors(1))
+		// 	std::cout << x.get_m_id() << " ";
+		// std::cout << std::endl;
+		// generate_data();
 
 	}
 	

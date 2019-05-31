@@ -107,7 +107,7 @@ void add_timings_to_file(std::vector<std::string> data) {
 int get_diameter(Graph graph) {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::mt19937 rng = std::mt19937(seed);
-	std::uniform_int_distribution<int> dist(0, graph.get_num_nodes() - 1);
+	std::uniform_int_distribution<int> dist(0 + Graph::offset(), graph.get_num_nodes());
 
 	int Dmax = 0;
 	Diameter_result ecce =  graph.get_eccentricity(dist(rng));
