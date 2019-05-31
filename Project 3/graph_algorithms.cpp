@@ -4,7 +4,7 @@
 #include <chrono>
 #include <algorithm>
 
-void generate_data (bool graph_file) {
+void generate_data () {
 	const std::vector<int> dist_sizes {1000, 10000, 100000};
 	const int upper_bound_diameter   = 5000000;
 	const int upper_bound_clustering = 500000;
