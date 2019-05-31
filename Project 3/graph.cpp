@@ -7,16 +7,20 @@
 	BEGIN NODE CLASS
 */
 Node::Node() {
-	this->m_id = -1;
+	this->id = -1;
 }
 
 Node::Node(int m_id) {
-	this->m_id = m_id;
+	this->id = m_id;
 }
 
 Node::Node(int m_id, std::vector<int> m_list) {
-	this->m_id = m_id;
+	this->id = m_id;
 	this->m_list = m_list;
+}
+
+bool Node::operator==(const Node& other) const {
+	return id == other.id;
 }
 
 std::vector<int>& Node::get_children(){
@@ -28,7 +32,7 @@ std::vector<int> Node::get_children() const {
 }
 
 int Node::get_m_id() const {
-	return this->m_id;
+	return this->id;
 }
 
 bool Node::edge_exists(int m_id) const {
@@ -52,6 +56,7 @@ Graph::Graph()
 
 }
 
+
 int Graph::get_num_nodes() {
 	return m_nodes;
 }
@@ -63,6 +68,10 @@ int Graph::get_num_edges() {
 int Graph::get_degree() {
 	// get_num_edges() is a given prototype so I can't modify it to make it const :P
 	return m_edges*2;
+}
+
+int Graph::offset() {
+	return k_offset;
 }
 
 int Graph::get_degree(int u) const {
@@ -97,8 +106,10 @@ std::vector<Node> Graph::get_neighbors(Node u) {
 
 void Graph::add_vertex() {
 	// for now only allow id's in strictly increasing order :)
-	Node node(m_nodes);
-	m_graph[m_nodes++] = node;
+	int id = m_nodes + offset();
+	Node node(id);
+	m_graph[id] = node;
+	++m_nodes;
 }
 
 bool Graph::add_edge(int m_id_from, int m_id_to) {
@@ -110,7 +121,7 @@ bool Graph::add_edge(int m_id_from, int m_id_to) {
 	}
 
 	// undirected so add the id's to both vectors
-	if (m_graph[m_id_from].edge_exists(m_id_to)) {
+	if (m_graph[m_id_from].edge_exists(m_id_to) || m_id_from == m_id_to) {
 		// std::cout << "Edge already exists." << std::endl;
 		return false;
 	}
@@ -223,6 +234,15 @@ int Graph::total_two_edge_path() const {
 		total += two_edge_path(node.second.get_m_id());
 	}
 	return total;
+}
+
+std::map<int, Node> Graph::get_id_to_node_map() {
+	std::map<int, Node> res;
+	for (const auto& node : m_graph) {
+		int m_id = node.second.get_m_id();
+		res[m_id] = m_graph[m_id];
+	}
+	return res;
 }
 
 std::map<int, int> Graph::vertex_to_degree_map() const {

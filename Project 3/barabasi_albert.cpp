@@ -32,8 +32,7 @@ Graph create_barabasi_albert_graph(int n, int d) {
 	for (int v = 0; v < n; ++v) {
 		graph.add_vertex();
 		for (int i = 0; i < d; ++i) {
-			// std::cout <<"v:"  << v << " i: " << i << std::endl;
-			M[2*(v*d+i)] = v;
+			M[2*(v*d+i)] = v + Graph::offset();
 			int upper_bound = 2*(v*d + i) - 1;
 			if (upper_bound < 0) {
 				upper_bound = 0;
@@ -44,7 +43,7 @@ Graph create_barabasi_albert_graph(int n, int d) {
 		}
 	}
 	for (int i = 0; i < n*d; ++i) {
-		graph.add_edge(M[2*i], M[2*i+1]);
+		graph.add_edge(M[2*i], M[2*i + 1]);
 	}
 	return graph;
 }

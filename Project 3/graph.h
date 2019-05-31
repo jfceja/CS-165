@@ -47,11 +47,18 @@ public:
 
 	int total_two_edge_path() const;
 
+	std::map<int, Node> get_id_to_node_map();
+
 	std::map<int, int> vertex_to_degree_map() const;
+
+	static int offset ();
 private:
 	int m_nodes;
 
 	int m_edges;
+
+	// offset for node ID's (starts at 0)
+	static const int k_offset = 1;
 
 	std::unordered_map<int, Node> m_graph;
 };
@@ -63,6 +70,7 @@ enum Algorithm {
 };
 
 void generate_data();
+void graph_to_file(Graph* g = NULL);
 void generate_data_variable_size_data(const std::vector<std::string>& header, int upper_bound, int reps, int d, Algorithm algo);
 void create_empty_timings_file(std::vector<std::string> data);
 void add_timings_to_file(std::vector<std::string> data);

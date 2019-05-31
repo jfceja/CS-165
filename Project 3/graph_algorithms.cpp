@@ -4,7 +4,7 @@
 #include <chrono>
 #include <algorithm>
 
-void generate_data () {
+void generate_data (bool graph_file) {
 	const std::vector<int> dist_sizes {1000, 10000, 100000};
 	const int upper_bound_diameter   = 5000000;
 	const int upper_bound_clustering = 500000;
@@ -29,7 +29,7 @@ void generate_data () {
 		for (const auto& ele : mapping) {
 			mapping_sorted.push_back(std::make_pair(ele.first, ele.second));
 		}
-		std::sort(mapping_sorted.begin(), mapping_sorted.end(), [](const auto& a, const auto& b){
+		std::sort(mapping_sorted.begin(), mapping_sorted.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b){
 			return a.first < b.first;
 		});
 		for (const auto& ele : mapping_sorted) {
@@ -57,6 +57,23 @@ void generate_data_variable_size_data(const std::vector<std::string>& header, in
 			}
 		}
 		add_timings_to_file({header.front(), std::to_string(sz), std::to_string(total/reps)});
+	}
+}
+
+void graph_to_file(Graph* g) {
+	if (!g) {
+		return;
+	}
+	const std::vector<std::string> node_file {"file_of_graph_node.csv", "Id", "Label"};
+	const std::vector<std::string> edge_file {"file_of_graph_edge.csv", "Source", "Target", "Type"};
+
+	create_empty_timings_file(node_file);
+	create_empty_timings_file(edge_file);
+	for (const auto& node_id : g->get_ids_nodes()) {
+		for (const auto& node : g->get_neighbors(Node(node_id))) {
+			add_timings_to_file({edge_file.front(), std::to_string(node_id), std::to_string(node.get_m_id()), "Undirected"});
+		}
+		add_timings_to_file({node_file.front(), std::to_string(node_id), std::to_string(node_id)});
 	}
 }
 
@@ -114,4 +131,17 @@ std::map<int, int> get_degree_distribution(Graph graph) {
 		post_process[itr->second]++;
 	}
 	return post_process;
+}
+Graph make_graph(int num_nodes, std::vector<int> u, std::vector<int> v) {
+	if (u.size() != v.size()) {
+		return Graph();
+	}
+	Graph g;
+	for (int i = 0; i < num_nodes; ++i) {
+		g.add_vertex();
+	}
+	for (unsigned int i = 0; i < u.size(); ++i) {
+		g.add_edge(u[i], v[i]);
+	}
+	return g;
 }

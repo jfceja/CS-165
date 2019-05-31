@@ -8,6 +8,8 @@ public:
 
 	Node(int m_id, std::vector<int> m_list);
 
+	bool operator==(const Node& other) const; 
+
 	bool edge_exists(int m_id) const;
 
 	std::vector<int>& get_children();
@@ -16,7 +18,9 @@ public:
 
 	int get_m_id() const;
 
+	// i want this to be private but TA mandated it being public & this name
+	int id;
+
 private:
-	int m_id;
 	std::vector<int> m_list;
 };

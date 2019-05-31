@@ -7,6 +7,17 @@
 /******* NODE CLASS ********/
 class Node;  // define/implement in node.h
 
+/*
+Node must 
+    have a default constructor
+    have a public member int 'id' which uniquely identifies a node (no two nodes have the same id).
+           id must be set in the constructor and thereafter not modified 
+    have the following method: 
+        bool operator==(const Node& other) const {return id == other.id;} 
+
+You may add whatever other members you like to Node
+*/
+
 /******* GRAPH BASE CLASS TO OVERRIDE********/
 class AbstractGraph 
 {
@@ -15,10 +26,18 @@ class AbstractGraph
         virtual int get_num_edges() = 0; // number of edges
         virtual bool is_neighbor(Node u, Node v) = 0 ;
         virtual std::vector<Node> get_neighbors(Node u) = 0; 
+
+        // allows lookup of nodes from ids
+        virtual std::map<int, Node> get_id_to_node_map() = 0;
 };
 
 class Graph; // define interface in graph.h, implement in graph.cpp (see below)
              // should #include "node.h"
+            
+// construct a graph using num_nodes nodes and edges (ui, vi) for all i
+// u and v will be the same length
+// (ui, vi) are pairs of integers which can be mapped uniquely to (ui', vi'), pairs of Nodes
+Graph make_graph(int num_nodes, std::vector<int> u, std::vector<int> v);
 
 /* graph.h
 class Graph : public AbstractGraph
@@ -50,7 +69,6 @@ Graph create_erdos_renyi_graph(int n, float p); // implement in erdos_renyi.cpp
                                                 // only if your student ID is ODD
 Graph create_barabasi_albert_graph(int n, int d); // implement in barabasi_albert.cpp
                                                   // only if your student ID is EVEN
-Graph create_barabasi_albert_graph_faster(int n, int d);
 // whichever file you have should #include "graph.h"
 
 /******* FILE SUMMARY (SORTED BY DEPENDENCIES) 
